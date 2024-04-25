@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/l4t-base:r35.1.0
+FROM nvcr.io/nvidia/l4t-pytorch:r35.2.1-pth2.0-py3
 
 ENV TERM=xterm
 ENV DEBIAN_FRONTEND=noninteractive
@@ -14,9 +14,10 @@ ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            ca-certificates \
-		  gnupg2 \
-          apt-utils \
+        ca-certificates \
+		gnupg2 \
+        apt-utils \
+        curl \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -37,18 +38,18 @@ RUN apt-get update && \
     && apt-get clean
 
 # Install Python 3.9
-RUN apt-get update && \
-    apt-get install -y \
-    apt-utils\
-    curl \
-    software-properties-common &&\
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get install -y \
-    python3.9-dev \
-    python3.9-distutils
+# RUN apt-get update && \
+#     apt-get install -y \
+#     apt-utils\
+#      \
+#     software-properties-common &&\
+#     add-apt-repository ppa:deadsnakes/ppa && \
+#     apt-get install -y \
+#     python3.9-dev \
+#     python3.9-distutils
 
-RUN ln -sf /usr/bin/python3.9 /usr/bin/python3 && \
-    ln -sf /usr/bin/python3.9 /usr/bin/python
+RUN ln -sf /usr/bin/python3.8 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.8 /usr/bin/python
 
 # Install pip (needs to be >=20.3 for open3d)
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
@@ -57,7 +58,7 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
 ENV TZ=US/Pacific
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Install essential packages
+# # Install essential packages
 RUN apt-get update && \
     apt-get install -y \
     wget \
@@ -124,6 +125,7 @@ RUN apt-get update && \
     cmake-curses-gui \
     libzmq3-dev \
     freeglut3-dev \
+    cmake \
     && apt-get clean
 
 RUN cd / && git clone https://github.com/pybind/pybind11 &&\
@@ -141,10 +143,10 @@ RUN cd / && wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.t
     cmake .. &&\
     make install
 
-ENV TORCH_INSTALL=https://developer.download.nvidia.cn/compute/redist/jp/v511/pytorch/torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl
+# ENV TORCH_INSTALL=https://developer.download.nvidia.cn/compute/redist/jp/v511/pytorch/torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl
 
 
-RUN pip install --no-cache $TORCH_INSTALL
+# RUN pip install --no-cache $TORCH_INSTALL
 
 RUN curl -LO https://github.com/NVIDIA/cub/archive/1.10.0.tar.gz &&\
     tar xzf 1.10.0.tar.gz &&\
@@ -155,19 +157,21 @@ RUN pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
 # We need to manually remove pyyaml because another package installs it via distutils
 RUN apt-get remove -y python3-yaml 
 
-RUN pip install scipy joblib scikit-learn ruamel.yaml trimesh opencv-python imageio open3d transformations warp-lang einops kornia pyrender
+RUN pip install scipy joblib scikit-learn ruamel.yaml trimesh opencv-python imageio open3d transformations warp-lang einops kornia pyrender kaolin
 
 # We're building on CUDA 11.3 as in the orignial FoundationPose work. This is a minor version mismatch with the CUDA used for torch (11.8)
-RUN cd / && git clone --recursive https://github.com/NVIDIAGameWorks/kaolin
-RUN cd /kaolin &&\
-    FORCE_CUDA=1 python setup.py develop
+# RUN cd / && git clone --recursive https://github.com/NVIDIAGameWorks/kaolin
+# RUN cd /kaolin &&\
+#     FORCE_CUDA=1 python setup.py develop
 
 RUN cd / && git clone https://github.com/NVlabs/nvdiffrast &&\
     cd /nvdiffrast && pip install .
 
 ENV OPENCV_IO_ENABLE_OPENEXR=1
 
-RUN pip install scikit-image meshcat webdataset omegaconf pypng roma seaborn opencv-contrib-python openpyxl wandb imgaug Ninja xlsxwriter timm albumentations xatlas rtree nodejs jupyterlab objaverse g4f ultralytics==8.0.120 pycocotools videoio numba h5py
+RUN apt-get install -y python3-h5py
+
+RUN pip install scikit-image meshcat webdataset omegaconf pypng roma seaborn opencv-contrib-python openpyxl wandb imgaug Ninja xlsxwriter timm albumentations xatlas rtree nodejs jupyterlab objaverse g4f ultralytics==8.0.120 pycocotools videoio numba
 
 ENV SHELL=/bin/bash
 RUN ln -sf /bin/bash /bin/sh
