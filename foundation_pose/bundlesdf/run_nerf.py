@@ -99,7 +99,7 @@ def run_linemod():
     out_file = f'{base_dir}/model/model.obj'
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     mesh.export(out_file)
-    logging.info(f"saved to {out_file}")
+    # logging.info(f"saved to {out_file}")
 
 
 if __name__=="__main__":

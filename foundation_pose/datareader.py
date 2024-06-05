@@ -100,7 +100,7 @@ class YcbineoatReader:
       pose = np.loadtxt(self.gt_pose_files[i]).reshape(4,4)
       return pose
     except:
-      logging.info("GT pose not found, return None")
+      # logging.info("GT pose not found, return None")
       return None
 
   def get_color(self,i):
@@ -275,7 +275,7 @@ class BopBaseReader:
         pos += 1
       mask_file = f'{self.base_dir}/{type}/{name:06d}_{pos:06d}.png'
       if not os.path.exists(mask_file):
-        logging.info(f'{mask_file} not found')
+        # logging.info(f'{mask_file} not found')
         return None
     else:
       # mask_dir = os.path.dirname(self.color_files[0]).replace('rgb',type)
@@ -565,7 +565,7 @@ class HomebrewedReader(BopBaseReader):
 
 
   def get_gt_pose(self, i_frame:int, ob_id, use_my_correction=False):
-    logging.info("WARN HomeBrewed doesn't have GT pose")
+    # logging.info("WARN HomeBrewed doesn't have GT pose")
     return np.eye(4)
 
 

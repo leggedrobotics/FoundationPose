@@ -56,7 +56,7 @@ def run_pose_estimation_worker(reader, i_frames, est:FoundationPose=None, debug=
   result = NestDict()
 
   for i, i_frame in enumerate(i_frames):
-    logging.info(f"{i}/{len(i_frames)}, i_frame:{i_frame}, ob_id:{ob_id}")
+    # logging.info(f"{i}/{len(i_frames)}, i_frame:{i_frame}, ob_id:{ob_id}")
     video_id = reader.get_video_id()
     color = reader.get_color(i_frame)
     depth = reader.get_depth(i_frame)
@@ -67,14 +67,14 @@ def run_pose_estimation_worker(reader, i_frames, est:FoundationPose=None, debug=
 
     ob_mask = get_mask(reader, i_frame, ob_id, detect_type=detect_type)
     if ob_mask is None:
-      logging.info("ob_mask not found, skip")
+      # logging.info("ob_mask not found, skip")
       result[video_id][id_str][ob_id] = np.eye(4)
       return result
 
     est.gt_pose = reader.get_gt_pose(i_frame, ob_id)
 
     pose = est.register(K=reader.K, rgb=color, depth=depth, ob_mask=ob_mask, ob_id=ob_id)
-    logging.info(f"pose:\n{pose}")
+    # logging.info(f"pose:\n{pose}")
 
     if debug>=3:
       m = est.mesh_ori.copy()

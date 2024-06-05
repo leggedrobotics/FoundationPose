@@ -57,14 +57,14 @@ if __name__=='__main__':
         debug=debug,
         glctx=glctx,
     )
-    logging.info("estimator initialization done")
+    # logging.info("estimator initialization done")
 
     reader = YcbineoatReader(
         video_dir=args.test_scene_dir, shorter_side=None, zfar=np.inf
     )
 
     for i in range(len(reader.color_files)):
-        logging.info(f"i:{i}")
+        # logging.info(f"i:{i}")
         color = reader.get_color(i)
         depth = reader.get_depth(i)
 

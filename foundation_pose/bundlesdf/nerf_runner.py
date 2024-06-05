@@ -177,14 +177,14 @@ class NerfRunner:
     rays = np.concatenate(rays_, axis=0)
 
     if self.cfg['denoise_depth_use_octree_cloud']:
-      logging.info("denoise cloud")
+      # logging.info("denoise cloud")
       mask = (rays[:,self.ray_mask_slice]>0) & (rays[:,self.ray_depth_slice]<=self.cfg['far']*self.cfg['sc_factor'])
       rays_dir = rays[mask][:,self.ray_dir_slice]
       rays_depth = rays[mask][:,self.ray_depth_slice]
       pts3d = rays_dir*rays_depth.reshape(-1,1)
       frame_ids = rays[mask][:,self.ray_frame_id_slice].astype(int)
       pts3d_w = (self.poses[frame_ids]@to_homo(pts3d)[...,None])[:,:3,0]
-      logging.info(f"Denoising rays based on octree cloud")
+      # logging.info(f"Denoising rays based on octree cloud")
 
       kdtree = cKDTree(self.build_octree_pts)
       dists,indices = kdtree.query(pts3d_w,k=1,workers=-1)
@@ -193,7 +193,7 @@ class NerfRunner:
       rays[bad_ids,self.ray_depth_slice] = BAD_DEPTH*self.cfg['sc_factor']
       rays[bad_ids, self.ray_type_slice] = 1
       rays = rays[rays[:,self.ray_type_slice]==0]
-      logging.info(f"bad_mask#={bad_mask.sum()}")
+      # logging.info(f"bad_mask#={bad_mask.sum()}")
 
     rays = torch.tensor(rays, dtype=torch.float).cuda()
 
@@ -333,7 +333,7 @@ class NerfRunner:
     #################### Dilate
     dilate_radius = int(np.round(self.cfg['octree_dilate_size']/octree_smallest_voxel_size))
     dilate_radius = max(1, dilate_radius)
-    logging.info(f"Octree voxel dilate_radius:{dilate_radius}")
+    # logging.info(f"Octree voxel dilate_radius:{dilate_radius}")
     shifts = []
     for dx in [-1,0,1]:
       for dy in [-1,0,1]:
@@ -643,7 +643,7 @@ class NerfRunner:
       for k in metrics.keys():
         msg += f"{k}: {metrics[k]:.7f}, "
       msg += "\n"
-      logging.info(msg)
+      # logging.info(msg)
 
       if self._run is not None:
         for k in metrics.keys():
@@ -685,7 +685,7 @@ class NerfRunner:
 
     for iter in range(self.N_iters):
       if iter%(self.N_iters//10)==0:
-        logging.info(f'train progress {iter}/{self.N_iters}')
+        # logging.info(f'train progress {iter}/{self.N_iters}')
       batch = next(self.data_loader)
       self.train_loop(batch.cuda())
       self.global_step += 1
@@ -1081,7 +1081,7 @@ class NerfRunner:
     else:
       valid = torch.ones(len(query_pts), dtype=bool).cuda()
 
-    logging.info(f'query_pts:{query_pts.shape}, valid:{valid.sum()}')
+    # logging.info(f'query_pts:{query_pts.shape}, valid:{valid.sum()}')
     flat = query_pts[valid]
 
     sigma = []
@@ -1096,15 +1096,15 @@ class NerfRunner:
     sigma_[valid] = sigma.reshape(-1)
     sigma = sigma_.reshape(N,N,N).data.cpu().numpy()
 
-    logging.info('Running Marching Cubes')
+    # logging.info('Running Marching Cubes')
     from skimage import measure
     try:
       vertices, triangles, normals, values = measure.marching_cubes(sigma, isolevel)
     except Exception as e:
-      logging.info(f"ERROR Marching Cubes {e}")
+      # logging.info(f"ERROR Marching Cubes {e}")
       return None
 
-    logging.info(f'done V:{vertices.shape}, F:{triangles.shape}')
+    # logging.info(f'done V:{vertices.shape}, F:{triangles.shape}')
 
     voxel_size_ndc = np.array([tx[-1] - tx[0], ty[-1] - ty[0], tz[-1] - tz[0]]) / np.array([[tx.shape[0] - 1, ty.shape[0] - 1, tz.shape[0] - 1]])
     offset = np.array([tx[0], ty[0], tz[0]])
@@ -1181,7 +1181,7 @@ class NerfRunner:
 
     all_tri_visited= {key: 0 for key in range(mesh.triangles.shape[0])}
 
-    logging.info(f"Texture: Texture map computation")
+    # logging.info(f"Texture: Texture map computation")
     for i in range(len(rgbs_raw)):
       print(f'project train_images {i}/{len(rgbs_raw)}')
 

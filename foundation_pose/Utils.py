@@ -118,7 +118,7 @@ def make_mesh_tensors(mesh, device='cuda', max_tex_size=None):
     mesh_tensors['uv']  = uv
   else:
     if mesh.visual.vertex_colors is None:
-      logging.info(f"WARN: mesh doesn't have vertex_colors, assigning a pure color")
+      # logging.info(f"WARN: mesh doesn't have vertex_colors, assigning a pure color")
       mesh.visual.vertex_colors = np.tile(np.array([128,128,128]).reshape(1,3), (len(mesh.vertices), 1))
     mesh_tensors['vertex_color'] = torch.as_tensor(mesh.visual.vertex_colors[...,:3], device=device, dtype=torch.float)/255.0
 
@@ -147,7 +147,7 @@ def nvdiffrast_render(K=None, H=None, W=None, ob_in_cams=None, glctx=None, conte
       glctx = dr.RasterizeCudaContext()
     else:
       raise NotImplementedError
-    logging.info("created context")
+    # logging.info("created context")
 
   if mesh_tensors is None:
     mesh_tensors = make_mesh_tensors(mesh)
@@ -922,7 +922,7 @@ class OctreeManager:
     for level in range(self.n_level):
       vox_pts = self.get_level_quantized_points(level)
       corner_pts = self.get_level_corner_quantized_points(level)
-      logging.info(f'level:{level}, vox_pts:{vox_pts.shape}, corner_pts:{corner_pts.shape}')
+      # logging.info(f'level:{level}, vox_pts:{vox_pts.shape}, corner_pts:{corner_pts.shape}')
 
   def get_level_corner_quantized_points(self,level):
     start = self.pyramid_dual[...,1,level]
@@ -949,7 +949,7 @@ class OctreeManager:
 
   def draw(self,level, method='point'):
     import kaolin
-    logging.info(f"level:{level}")
+    # logging.info(f"level:{level}")
     vox_size = self.get_vox_size_at_level(level)
 
     if method=='point':

@@ -76,9 +76,9 @@ def compute_scene_bounds(color_files,glcam_in_worlds,K,use_mask=True,base_dir=No
     for i in range(len(color_files)):
       args.append((color_files[i],K,glcam_in_worlds[i],use_mask))
 
-  logging.info(f"compute_scene_bounds_worker start")
+  # logging.info(f"compute_scene_bounds_worker start")
   ret = joblib.Parallel(n_jobs=10, prefer="threads")(joblib.delayed(compute_scene_bounds_worker)(*arg) for arg in args)
-  logging.info(f"compute_scene_bounds_worker done")
+  # logging.info(f"compute_scene_bounds_worker done")
 
   pcd_all = None
   for r in ret:
@@ -90,7 +90,7 @@ def compute_scene_bounds(color_files,glcam_in_worlds,K,use_mask=True,base_dir=No
       pcd_all += toOpen3dCloud(r[0],r[1])
   pcd = pcd_all.voxel_down_sample(eps/5)
 
-  logging.info(f"merge pcd")
+  # logging.info(f"merge pcd")
 
   o3d.io.write_point_cloud(f'{base_dir}/naive_fusion.ply',pcd)
   pts = np.asarray(pcd.points).copy()
@@ -113,7 +113,7 @@ def compute_scene_bounds(color_files,glcam_in_worlds,K,use_mask=True,base_dir=No
     tmp_pts = np.asarray(tmp.points)
     keep_mask = (np.abs(tmp_pts)<1).all(axis=-1)
 
-  logging.info(f"compute_translation_scales done")
+  # logging.info(f"compute_translation_scales done")
 
   pcd = toOpen3dCloud(pts[keep_mask],np.asarray(pcd.colors)[keep_mask])
   o3d.io.write_point_cloud(f"{base_dir}/naive_fusion_biggest_cluster.ply",pcd)

@@ -50,7 +50,7 @@ def run_pose_estimation_worker(reader, i_frames, est:FoundationPose, debug=False
   for i in range(len(i_frames)):
     i_frame = i_frames[i]
     id_str = reader.id_strs[i_frame]
-    logging.info(f"{i}/{len(i_frames)}, video:{reader.get_video_id()}, id_str:{id_str}")
+    # logging.info(f"{i}/{len(i_frames)}, video:{reader.get_video_id()}, id_str:{id_str}")
     color = reader.get_color(i_frame)
     depth = reader.get_depth(i_frame)
 
@@ -58,15 +58,15 @@ def run_pose_estimation_worker(reader, i_frames, est:FoundationPose, debug=False
     scene_ob_ids = reader.get_instance_ids_in_image(i_frame)
     video_id = reader.get_video_id()
 
-    logging.info(f"video:{reader.get_video_id()}, id_str:{id_str}, ob_id:{ob_id}")
+    # logging.info(f"video:{reader.get_video_id()}, id_str:{id_str}, ob_id:{ob_id}")
     if ob_id not in scene_ob_ids:
-      logging.info(f'skip {ob_id} as it does not exist in this scene')
+      # logging.info(f'skip {ob_id} as it does not exist in this scene')
       continue
     ob_mask = get_mask(reader, i_frame, ob_id, detect_type=detect_type)
 
     est.gt_pose = reader.get_gt_pose(i_frame, ob_id)
     pose = est.register(K=reader.K, rgb=color, depth=depth, ob_mask=ob_mask, ob_id=ob_id, iteration=5)
-    logging.info(f"pose:\n{pose}")
+    # logging.info(f"pose:\n{pose}")
 
 
     if debug>=3:
