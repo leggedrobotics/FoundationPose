@@ -23,7 +23,7 @@ from PIL import Image
 import cv2
 import time
 import argparse,pickle
-from Utils import *
+from utils import *
 
 
 cvcam_in_glcam = np.array([[1,0,0,0],

@@ -13,7 +13,7 @@ import torch.nn.functional as F
 import numpy as np
 code_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{code_dir}/../')
-from Utils import *
+from utils import *
 from pytorch3d.transforms import so3_log_map,so3_exp_map,se3_exp_map
 
 img2mse = lambda x, y : torch.mean((x - y) ** 2)

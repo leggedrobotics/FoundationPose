@@ -12,14 +12,14 @@ import numpy as np
 code_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(code_dir)
 sys.path.append(f'{code_dir}/../../../../')
-from Utils import *
+from utils import *
 import torch.nn.functional as F
 import torch
 import torch.nn as nn
 import cv2
 from functools import partial
 from network_modules import *
-from Utils import *
+from utils import *
 
 
 

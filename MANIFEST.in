@@ -1,0 +1,2 @@
+recursive-include foundation_pose/data *
+recursive-include foundation_pose/resources *

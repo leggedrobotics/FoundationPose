@@ -20,7 +20,7 @@ sys.path.append(f'{code_dir}/../../../')
 from learning.datasets.h5_dataset import *
 from learning.models.score_network import *
 from learning.datasets.pose_dataset import *
-from Utils import *
+from utils import *
 from datareader import *
 
 

@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os
 
 def parse_requirements(filename):
     with open(filename, "r") as f:
@@ -24,4 +23,7 @@ setup(
     dependency_links=["--extra-index-url https://download.pytorch.org/whl/cu118"],
     install_requires=requirements,
     include_package_data=True,
+    package_data={
+        'foundation_pose': ['weights/**', 'mycpp/**'],
+    },
 )

@@ -7,7 +7,7 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 
-from Utils import *
+from utils import *
 import json,uuid,joblib,os,sys,argparse
 from datareader import *
 from estimater import *
